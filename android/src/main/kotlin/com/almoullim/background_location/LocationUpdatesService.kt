@@ -116,7 +116,9 @@ class LocationUpdatesService : Service() {
             mFusedLocationCallback = object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
-                    locationResult.lastLocation?.let { onNewLocation(it) }
+                    if(locationResult.lastLocation!=null) {
+                        onNewLocation(locationResult.lastLocation!!)
+                    }
                 }
             }
         } else {
@@ -163,12 +165,10 @@ class LocationUpdatesService : Service() {
         Utils.setRequestingLocationUpdates(this, true)
         try {
             if (isGoogleApiAvailable && !this.forceLocationManager) {
-                mLocationRequest?.let {
-                    mFusedLocationClient!!.requestLocationUpdates(
-                        it,
-                        mFusedLocationCallback!!, Looper.myLooper()
-                    )
-                }
+                mFusedLocationClient!!.requestLocationUpdates(
+                    mLocationRequest!!,
+                    mFusedLocationCallback!!, Looper.myLooper()
+                )
             } else {
                 mLocationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
